@@ -1,0 +1,157 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --c-ivory: 247 243 234;
+  --c-sand: 231 216 194;
+  --c-earth: 128 102 75;
+  --c-walnut: 73 56 46;
+  --c-olive: 120 128 100;
+  --c-charcoal: 41 39 34;
+  /* Accent themes darken the brand colours so text and buttons stay readable. */
+  --c-accent: 91 99 71;
+  --c-accent-soft: 227 229 215;
+}
+:root[data-accent='earth'] {
+  --c-accent: 111 84 56;
+  --c-accent-soft: 238 227 211;
+}
+:root[data-accent='walnut'] {
+  --c-accent: 73 56 46;
+  --c-accent-soft: 233 224 214;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-ivory font-sans text-charcoal antialiased;
+    line-height: 1.6;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-serif text-walnut;
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  :focus-visible {
+    @apply outline outline-2 outline-offset-2 outline-accent;
+  }
+  ::selection {
+    @apply bg-sand text-walnut;
+  }
+  img {
+    @apply max-w-full;
+  }
+  [lang='hi'] {
+    font-family: 'Noto Serif Devanagari', serif;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-page px-5 sm:px-8;
+  }
+
+  /* Buttons */
+  .btn {
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-sm border px-5 py-2.5 text-sm font-medium transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn border-accent bg-accent text-ivory hover:bg-walnut hover:border-walnut;
+  }
+  .btn-secondary {
+    @apply btn border-walnut/40 bg-transparent text-walnut hover:border-walnut hover:bg-sand/50;
+  }
+  .btn-danger {
+    @apply btn border-red-800 bg-red-800 text-white hover:bg-red-900;
+  }
+  .btn-quiet {
+    @apply btn border-transparent bg-transparent px-3 text-walnut hover:bg-sand/60;
+  }
+  .btn-sm {
+    @apply min-h-[36px] px-3 py-1.5 text-[13px];
+  }
+
+  /* Forms */
+  .field-label {
+    @apply mb-1.5 block text-sm font-medium text-walnut;
+  }
+  .field-hint {
+    @apply mt-1 text-xs text-earth;
+  }
+  .field-error {
+    @apply mt-1 text-xs font-medium text-red-800;
+  }
+  .input {
+    @apply block min-h-[44px] w-full rounded-sm border border-earth/40 bg-white/70 px-3 py-2 text-[15px] text-charcoal placeholder:text-earth/70 focus:border-accent;
+  }
+  .input[aria-invalid='true'] {
+    @apply border-red-700;
+  }
+  textarea.input {
+    @apply min-h-[96px] leading-relaxed;
+  }
+
+  .link {
+    @apply font-medium text-accent underline decoration-accent/40 underline-offset-4 transition-colors hover:decoration-accent;
+  }
+
+  /* Signature element: woven threads. Warp (vertical) and weft (horizontal) hairlines. */
+  .weave {
+    background-color: rgb(var(--c-sand) / 0.55);
+    background-image:
+      repeating-linear-gradient(90deg, rgb(var(--c-earth) / 0.09) 0 1px, transparent 1px 6px),
+      repeating-linear-gradient(0deg, rgb(var(--c-walnut) / 0.07) 0 1px, transparent 1px 6px);
+  }
+  .weave-dark {
+    background-color: rgb(var(--c-walnut));
+    background-image:
+      repeating-linear-gradient(90deg, rgb(var(--c-ivory) / 0.06) 0 1px, transparent 1px 6px),
+      repeating-linear-gradient(0deg, rgb(var(--c-ivory) / 0.04) 0 1px, transparent 1px 6px);
+  }
+  /* Three threads running along the selvedge edge of a cloth. */
+  .selvedge {
+    height: 7px;
+    background: linear-gradient(
+      to bottom,
+      rgb(var(--c-walnut)) 0 2px,
+      transparent 2px 3px,
+      rgb(var(--c-olive)) 3px 4px,
+      transparent 4px 5px,
+      rgb(var(--c-sand)) 5px 7px
+    );
+  }
+
+  .skeleton {
+    @apply animate-pulse rounded-sm bg-sand/70;
+  }
+
+  .prose-body {
+    @apply max-w-[68ch] text-[17px] leading-[1.75] text-charcoal/90;
+  }
+  .prose-body p + p {
+    @apply mt-4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
