@@ -6,7 +6,9 @@ export const MEDIA_BUCKET = 'media'
 
 /** Public URL of a file in the media bucket. Pure string building, no network call. */
 export function mediaUrl(path: string | null | undefined): string | null {
-  if (!path || !env.supabaseUrl) return null
+  if (!path) return null
+  if (/^https?:\/\//i.test(path)) return path
+  if (!env.supabaseUrl) return null
   const encoded = path.split('/').map(encodeURIComponent).join('/')
   return `${env.supabaseUrl}/storage/v1/object/public/${MEDIA_BUCKET}/${encoded}`
 }

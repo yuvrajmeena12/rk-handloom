@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://rk-handloom.vercel.app/</loc>
+  </url>
+  <url>
+    <loc>https://rk-handloom.vercel.app/catalog</loc>
+  </url>
+  <url>
+    <loc>https://rk-handloom.vercel.app/about</loc>
+  </url>
+  <url>
+    <loc>https://rk-handloom.vercel.app/contact</loc>
+  </url>
+  <url>
+    <loc>https://rk-handloom.vercel.app/privacy</loc>
+  </url>
+  <url>
+    <loc>https://rk-handloom.vercel.app/terms</loc>
+  </url>
+  <url>
+    <loc>https://rk-handloom.vercel.app/category/handloom</loc>
+    <lastmod>2026-10-24</lastmod>
+  </url>
+  <url>
+    <loc>https://rk-handloom.vercel.app/category/mattresses</loc>
+    <lastmod>2026-10-24</lastmod>
+  </url>
+  <url>
+    <loc>https://rk-handloom.vercel.app/product/orthopedic-foam-mattress</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
+    <loc>https://rk-handloom.vercel.app/product/cotton-dari-6x4-ft</loc>
+    <lastmod>2026-10-24</lastmod>
+  </url>
+</urlset>

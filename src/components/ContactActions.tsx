@@ -8,8 +8,8 @@ interface ContactActionsProps {
   message?: string
   show?: Array<'call' | 'whatsapp' | 'directions'>
   className?: string
-  /** Visual weight: "solid" uses the primary button for the first action. */
-  size?: 'sm' | 'md'
+  /** Visual weight: 'sm' or 'md' or 'lg' */
+  size?: 'sm' | 'md' | 'lg'
   onAction?: () => void
 }
 
@@ -26,26 +26,42 @@ export function ContactActions({
   const tel = telHref(settings.phone)
   const wa = whatsappHref(settings.whatsapp_number, message ?? generalEnquiryMessage(settings.name_en))
   const dir = directionsUrl(settings)
-  const sm = size === 'sm' ? 'btn-sm' : ''
+  const sizeClass = size === 'sm' ? 'btn-sm' : size === 'lg' ? 'btn-lg' : ''
 
   return (
-    <div className={cn('flex flex-wrap gap-3', className)}>
+    <div className={cn('flex flex-wrap items-center gap-3', className)}>
       {show.includes('whatsapp') && wa && (
-        <a href={wa} target="_blank" rel="noopener noreferrer" onClick={onAction} className={cn('btn-primary', sm)}>
-          <MessageCircle className="h-4 w-4" aria-hidden />
-          {settings.whatsapp_label || 'WhatsApp'}
+        <a
+          href={wa}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={onAction}
+          className={cn('btn-whatsapp group shadow-sm transition-all duration-200', sizeClass)}
+        >
+          <MessageCircle className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" aria-hidden />
+          <span>{settings.whatsapp_label || 'WhatsApp Enquiry'}</span>
         </a>
       )}
       {show.includes('call') && tel && (
-        <a href={tel} onClick={onAction} className={cn('btn-secondary', sm)}>
-          <Phone className="h-4 w-4" aria-hidden />
-          {settings.call_label || 'Call us'}
+        <a
+          href={tel}
+          onClick={onAction}
+          className={cn('btn-secondary group shadow-sm transition-all duration-200', sizeClass)}
+        >
+          <Phone className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" aria-hidden />
+          <span>{settings.call_label || 'Call Showroom'}</span>
         </a>
       )}
       {show.includes('directions') && dir && (
-        <a href={dir} target="_blank" rel="noopener noreferrer" onClick={onAction} className={cn('btn-secondary', sm)}>
-          <MapPin className="h-4 w-4" aria-hidden />
-          {settings.directions_label || 'Get directions'}
+        <a
+          href={dir}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={onAction}
+          className={cn('btn-secondary group shadow-sm transition-all duration-200', sizeClass)}
+        >
+          <MapPin className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" aria-hidden />
+          <span>{settings.directions_label || 'Get Directions'}</span>
         </a>
       )}
     </div>

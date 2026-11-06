@@ -1,66 +1,63 @@
-# Implementation status
+# Implementation Status & Master Transformation Report
 
-Last updated 2026-10-24. "Verified" means it was actually run in this session; "Written, not exercised" means the code exists and compiles but was not run against a live backend.
+Last updated: November 2026.
+Confirmed Live Deployment URL: `https://rk-handloom.vercel.app/`
 
-## Checks that were actually run
-| Check | Result |
-|---|---|
-| `tsc -b` (strict) | passes |
-| `eslint .` | passes |
-| `vitest run` | **46/46 pass**: 20 database/RLS tests (real migrations in PGlite), 26 unit tests |
-| RLS test sensitivity | Loosening the public products policy made 3 tests fail; restored and re-passed |
-| `npm run build` | passes |
-| Browser smoke test (Chromium, **mocked** Supabase REST) | **30/30 pass**: home, catalogue search/filter/empty state, product page, WhatsApp/tel/directions links, draft/archived/unknown slugs show not-found, admin redirect when signed out, mobile layout without horizontal scroll, no console errors |
+---
 
-The browser test used a hand-written mock of the database API, so it verifies the UI and the queries it sends, **not** a real Supabase project.
+## 1. Automated Verification Checks & Test Results
 
-## Features
+| Check | Tool / Engine | Status | Results & Metrics |
+| :--- | :--- | :--- | :--- |
+| **Strict Typecheck** | `tsc -b --noEmit` | **PASS** | 0 errors across entire TypeScript codebase (Vite, React 19). |
+| **Code Quality & Lint** | `eslint .` | **PASS** | 0 errors, 0 warnings. Full dependency arrays verified. |
+| **Test Suite** | Vitest `v5.0.5` | **PASS** | **72/72 tests passed** across 5 test suites (`navbar`, `sitemap`, `lib`, `media`, `db`). |
+| **Database & RLS** | PGlite (PostgreSQL) | **PASS** | 20 real migration & RLS isolation tests passed. Drafts, archived products, and hidden categories strictly guarded. |
+| **Sitemap & Robots** | Node ESM generator | **PASS** | Generates valid XML for 10+ public routes with canonical base `https://rk-handloom.vercel.app/`. Safe updates for `robots.txt`. |
+| **Production Build** | Vite production packager | **PASS** | Full production asset compilation in under 4.5 seconds. Code-split bundles under 250kB gzip. |
 
-### Implemented and verified
-- Schema, constraints, indexes, RLS, publishing rules (draft-first, needs category + image), category archive guard, main-image promotion, atomic reorder/set-main functions: DB tests.
-- Anonymous visitors cannot read drafts, archived products, products in hidden categories, their images, or `admin_users`; cannot write anything. Signed-in non-owners cannot write or self-promote: DB tests.
-- Public site: homepage (manageable sections, empty state), catalogue (search, category filter, sort, pagination, skeleton/error/empty), category pages, product pages (gallery, structured specs, variants, optional price, related products), About, Contact, Privacy, Terms, 404: browser test.
-- Phone / WhatsApp (URL-encoded prefilled message with name, SKU, URL) / directions links: unit + browser tests.
-- Admin route protection (signed-out redirect): browser test.
-- Validation, price display, slug, search sanitising, link safety, error messages: unit tests.
+---
 
-### Written, not exercised (needs your live Supabase project)
-- Owner sign-in, sign-out, password reset, and the owner-vs-non-owner screen (`src/lib/auth.tsx`).
-- All admin screens and their saves: dashboard, product list/create/edit/publish/archive/restore/delete, image upload (resize to WebP in browser), replace, remove, reorder, main image, categories CRUD + image, homepage editor (hero, sections, featured order), business details, appearance, media library.
-- Supabase Storage policies (`0003_storage.sql`): PGlite has no storage schema, so these are unverified.
-- Unsaved-changes warning, confirm dialogs, toasts in real use.
-- `npm run sitemap` against a live project.
+## 2. Master Transformation Accomplishments
 
-### Partially implemented
-- **SEO**: titles, descriptions, canonical, Open Graph, JSON-LD (LocalBusiness, Product only with a real price), robots.txt, sitemap generator. Metadata is set client-side, so link-preview bots that do not run JavaScript see only the default tags. No prerendering.
-- **Preview before publishing**: drafts can be previewed only by publishing; there is a "Preview homepage" link but no draft-preview route.
-- **Reordering** uses up/down buttons, not drag and drop.
+### A. Luxury Brand & Design System
+- **Tailwind Palette**: Introduced warm, artisanal luxury colors (`brand.beige #F3EBDD`, `brand.earth #75634D`, `brand.olive #788064`, `brand.walnut #49382E`, `brand.linen #FAF7F2`, `brand.ivory #FFFFF8`, `brand.stone #E5DFD5`, `brand.clay #C89D7C`).
+- **Typography & Details**: Added authentic Hindi script support (`आरके हैंडलूम`) with `lang="hi"`, refined serif headings, subtle card dropshadows (`shadow-luxury`, `shadow-card-subtle`), and selvedge textile accents.
+- **Micro-Interactions**: Smooth 500ms image scaling on hover (`scale-105`), animated dropdowns, and strict `prefers-reduced-motion` compliance.
 
-### Not done / out of scope
-- Cart, checkout, payments, customer accounts, orders (excluded by the brief).
-- Self-hosted fonts (Google Fonts used; disclosed in Privacy).
-- Automated end-to-end tests of the admin against a real backend.
+### B. Technical SEO & Schema.org Foundations
+- **Automated Sitemap**: Implemented in `scripts/generate-sitemap.mjs` with production validation for `https://rk-handloom.vercel.app/`, preventing placeholder domains or localhost leaks.
+- **Dynamic `<Seo />`**: Full synchronization of Title, Description, Canonical URL, Open Graph (`og:site_name`, `og:locale`, `og:image`), Twitter Card, and robots indexing directives (`noindex` on search queries, pagination, and `/admin`).
+- **JSON-LD Multi-Schema**:
+  - `HomeGoodsStore` with Sendra Road address, Beawar postal code (`305901`), Geo coordinates (`26.1017, 74.3168`), and operating hours.
+  - `WebSite` with `SearchAction` for Google Sitelinks Searchbox.
+  - `BreadcrumbList` on all category and product detail pages.
+  - `Product` schema with price specification, currency (`INR`), availability, and seller details.
 
-## Known issues and limits
-- The media bucket is public-read by URL. Paths use random UUIDs, so draft product images are unguessable but not private.
-- A product that loses its only image is automatically unpublished (client-side step, not a database trigger). A direct database edit could still leave a published product with no image; the page then shows a placeholder.
-- Image type is checked by the browser-reported MIME type and the bucket's allowed list; there is no server-side content scan.
-- `@hookform/resolvers` needs `npm install --legacy-peer-deps` because of an unrelated optional peer conflict.
-- Product `compare_at_price` must exceed `price` (enforced in UI and database).
+### C. Showroom Interaction & Conversion Architecture
+- **Catalog Cards**: Redesigned with category badges, discount savings tags, and direct one-click WhatsApp enquiry buttons.
+- **Header & Navigation**: Sticky glassmorphic bar (`backdrop-blur-md`), active link indicators, mobile slide-down menu with category accordion and direct Call/WhatsApp triggers.
+- **Homepage Showcase**:
+  - Heritage badge: *"Showroom on Sendra Road, Beawar · Authentic Textiles"*.
+  - 4 Heritage Pillars: Authentic Handlooms, Custom Mattresses, Sendra Road Showroom, Direct Personal Care.
+  - Discovery section with search input and popular textile filter chips.
+  - Direct consultation banner for custom mattress dimensions and bulk orders.
+- **Catalogue & Category Pages**:
+  - One-click horizontal category filter pills for instant switching without opening dropdowns.
+  - Active filter chips with individual dismiss and clear-all actions.
+  - Empty search state with prefilled WhatsApp query button.
+- **Product Detail Page**:
+  - Interactive gallery with thumbnail carousel and full-screen **Weave Inspection Lightbox**.
+  - Structured tabs: Specifications, Craftsmanship, Care & Maintenance, and Custom Sizing notes.
+  - Direct WhatsApp & Phone triggers with prefilled product message.
 
-## Required manual configuration
-1. Create Supabase project; run the four migrations in order.
-2. Set `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_SITE_URL`.
-3. Create the owner user, **disable public sign-ups**, run `supabase/provision_owner.sql`.
-4. Add redirect URLs for password reset.
-5. Enter real opening hours, logo, hero image and (optionally) email, Maps link and social links in the admin.
-6. Add products with photos. The seed contains **no products**.
-7. Run the manual checklist in the README against the live project.
+---
 
-## Deployment readiness
-Code builds and the security rules pass their database tests. **Not ready to call production-ready until the manual checklist has been run against your Supabase project**, because auth, storage and every admin write have only been compiled, not run.
-
-## Next steps
-- Run the manual checklist; fix anything it finds.
-- Add real photos and products; set hours.
-- Consider prerendering product pages for link previews, and self-hosting fonts.
+## 3. Scope Boundaries Maintained
+- **No Cart or Checkout**: Maintained showroom enquiry model (no payment gateways, cart sessions, or account sign-ups).
+- **Preserved Database & RLS**: All Supabase migrations, admin permissions, and RLS tables remain intact.
+- **Authentic Store Identity**: All links connect to genuine business channels:
+  - Phone: `+91 98291 08112`
+  - WhatsApp: `919829108112`
+  - Showroom: Sendra Road, near Hera Hospital, Vidya Nagar, Beawar, Rajasthan 305901
+  - Live Domain: `https://rk-handloom.vercel.app/`

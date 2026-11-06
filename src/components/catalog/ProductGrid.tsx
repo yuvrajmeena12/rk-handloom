@@ -45,8 +45,8 @@ export function ProductGrid({ params, onPageChange, emptyTitle, emptyBody, empty
           query.isPlaceholderData ? 'opacity-60' : ''
         }`}
       >
-        {items.map((p) => (
-          <ProductCard key={p.id} product={p} />
+        {items.map((p, index) => (
+          <ProductCard key={p.id} product={p} priority={page === 1 && index < 2} />
         ))}
       </div>
       <Pagination page={page} pageSize={pageSize} total={total} onChange={onPageChange} />
